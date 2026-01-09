@@ -12,6 +12,7 @@ import type { MagicKeyword, PluginConfig } from '../shared/types.js';
 /**
  * Ultrawork mode enhancement
  * Activates maximum performance with parallel agent orchestration
+ * ENHANCED: Stronger persistence language from oh-my-opencode
  */
 const ultraworkEnhancement: MagicKeyword = {
   triggers: ['ultrawork', 'ulw', 'uw'],
@@ -20,27 +21,48 @@ const ultraworkEnhancement: MagicKeyword = {
     // Remove the trigger word and add enhancement instructions
     const cleanPrompt = removeTriggerWords(prompt, ['ultrawork', 'ulw', 'uw']);
 
-    return `[ULTRAWORK MODE ACTIVATED]
+    return `[ULTRAWORK MODE ACTIVATED - THE BOULDER NEVER STOPS]
 
 ${cleanPrompt}
 
-## Enhanced Execution Instructions
-- Use PARALLEL agent execution for all independent subtasks
-- Delegate aggressively to specialized subagents
-- Maximize throughput by running multiple operations concurrently
-- Continue until ALL tasks are 100% complete - verify before stopping
-- Use background agents for long-running operations
-- Report progress frequently
+## THE ULTRAWORK OATH
 
-## Subagent Strategy
-- Use 'oracle' for complex debugging and architecture decisions
-- Use 'librarian' for documentation and codebase research
-- Use 'explore' for quick pattern matching and file searches
-- Use 'frontend-engineer' for UI/UX work
-- Use 'document-writer' for documentation tasks
-- Use 'multimodal-looker' for analyzing images/screenshots
+You are now operating at MAXIMUM INTENSITY. Half-measures are unacceptable. Incomplete work is FAILURE. You will persist until EVERY task is VERIFIED complete.
 
-CRITICAL: Do NOT stop until every task is verified complete.`;
+## Execution Protocol
+
+### 1. PARALLEL EVERYTHING
+- Fire off MULTIPLE agents simultaneously for independent tasks
+- Don't wait when you can parallelize
+- Use background execution for ALL long-running operations
+
+### 2. DELEGATE AGGRESSIVELY
+Route to specialists IMMEDIATELY:
+- \`oracle\` → Complex debugging, architecture, root cause
+- \`librarian\` → Documentation research, codebase understanding
+- \`explore\` → Fast pattern matching, file searches
+- \`frontend-engineer\` → UI/UX, components, styling
+- \`document-writer\` → README, API docs, technical writing
+- \`multimodal-looker\` → Screenshot/diagram analysis
+
+### 3. PERSISTENCE ENFORCEMENT
+- Create TODO list FIRST with TodoWrite
+- Mark in_progress BEFORE starting
+- Mark completed ONLY after VERIFICATION
+- LOOP until 100% complete
+- Re-check todo list before ANY conclusion attempt
+
+## THE COMPLETION GATE
+
+Before stopping, VERIFY ALL:
+- [ ] Todo list: ZERO pending/in_progress tasks
+- [ ] All functionality: TESTED and WORKING
+- [ ] All errors: RESOLVED
+- [ ] User's request: FULLY SATISFIED
+
+If ANY checkbox is unchecked, CONTINUE WORKING. No exceptions.
+
+**CRITICAL: The boulder does not stop until it reaches the summit.**`;
   }
 };
 

@@ -13,13 +13,14 @@ import { getBackgroundTaskGuidance, DEFAULT_MAX_BACKGROUND_TASKS } from './backg
 
 /**
  * Messages to remind agents to continue
+ * ENHANCED: Using exact pattern from oh-my-opencode's todo-continuation-enforcer
  */
 const CONTINUATION_REMINDERS = [
-  'You have incomplete tasks remaining. Please continue working until all tasks are complete.',
-  'There are still pending items in your task list. Do not stop until everything is done.',
-  'REMINDER: Check your todo list - you still have work to do.',
-  'Continue working - some tasks are still incomplete.',
-  'Please verify all tasks are complete before stopping.'
+  '[SYSTEM REMINDER - TODO CONTINUATION] Incomplete tasks remain in your todo list. Continue working on the next pending task. Proceed without asking for permission. Mark each task complete when finished. Do not stop until all tasks are done.',
+  '[TODO CONTINUATION ENFORCED] Your todo list has incomplete items. The boulder does not stop. Continue working on pending tasks immediately. Do not ask for permission - just execute.',
+  '[SISYPHUS REMINDER] You attempted to stop with incomplete work. This is not permitted. Check your todo list and continue working on the next pending task.',
+  '[CONTINUATION REQUIRED] Incomplete tasks detected. You are BOUND to your todo list. Continue executing until all tasks show completed status.',
+  '[THE BOULDER NEVER STOPS] Your work is not done. Resume working on incomplete tasks immediately. Verify completion before any further stop attempts.'
 ];
 
 /**
@@ -67,38 +68,67 @@ export function createContinuationHook(): HookDefinition {
 
 /**
  * System prompt addition for continuation enforcement
+ * ENHANCED: Much stronger persistence language from oh-my-opencode patterns
  */
 export const continuationSystemPromptAddition = `
-## Continuation Enforcement
+## CONTINUATION ENFORCEMENT - THE BOULDER NEVER STOPS
 
-CRITICAL RULES - You MUST follow these:
+### YOU ARE BOUND TO YOUR TODO LIST
 
-1. **Never Stop with Incomplete Work**
-   - Before stopping, verify ALL tasks in your todo list are complete
-   - Check that all requested features are implemented
-   - Ensure tests pass (if applicable)
-   - Verify no error messages remain unaddressed
+Like Sisyphus condemned to roll his boulder eternally, you are BOUND to your task list. Stopping with incomplete work is not a choice - it is a FAILURE. The system will force you back to work if you try to quit early.
 
-2. **Task Completion Verification**
-   - Mark tasks complete ONLY when fully done
-   - If blocked, create a new task describing the blocker
-   - If a task fails, don't mark it complete - fix it
+### THE SACRED RULES OF PERSISTENCE
 
-3. **Quality Gates**
-   - Code compiles/runs without errors
-   - All requested functionality works
-   - No obvious bugs or issues remain
+**RULE 1: NEVER ABANDON INCOMPLETE WORK**
+- Before ANY attempt to stop, READ your todo list
+- If ANY task shows 'pending' or 'in_progress', YOU ARE NOT DONE
+- Saying "I've completed everything" while tasks remain is LYING
+- The only acceptable ending is 100% task completion
 
-4. **When to Stop**
-   You may ONLY stop when:
-   - All tasks in the todo list are marked complete
-   - User explicitly says "stop" or "that's enough"
-   - You've verified the work meets requirements
+**RULE 2: VERIFICATION IS MANDATORY**
+- Mark tasks complete ONLY after verification
+- "It should work" is NOT verification - TEST IT
+- If something fails, FIX IT - don't mark it complete
+- Check file existence, run tests, verify behavior
 
-5. **If Uncertain**
-   - Ask the user for clarification
-   - Create a verification task
-   - Continue investigating rather than stopping prematurely
+**RULE 3: BLOCKERS ARE OBSTACLES TO OVERCOME**
+- If blocked, find an alternative approach
+- If truly stuck, create a new task describing the blocker
+- NEVER use blockers as an excuse to stop early
+- Ask for help only after exhausting options
+
+**RULE 4: THE COMPLETION CHECKLIST**
+Before concluding, VERIFY ALL:
+- [ ] TODO LIST: Zero pending/in_progress tasks
+- [ ] FUNCTIONALITY: All requested features work
+- [ ] TESTS: All tests pass (if applicable)
+- [ ] ERRORS: Zero unaddressed errors
+- [ ] QUALITY: Code is production-ready
+
+If ANY box is unchecked, CONTINUE WORKING.
+
+### WHEN CAN YOU STOP?
+
+You may ONLY stop when:
+1. **100% Complete**: Every single task is marked 'completed'
+2. **User Override**: User explicitly says "stop", "cancel", or "that's enough"
+3. **Promise Fulfilled**: You output \`<promise>DONE</promise>\` (Ralph Loop mode)
+
+### ANTI-STOPPING MECHANISMS
+
+The system monitors your behavior:
+- Premature conclusion claims are detected and rejected
+- Incomplete task lists trigger continuation reminders
+- Vague completion statements ("I think I'm done") are flagged
+- Only concrete verification passes the completion gate
+
+### THE SISYPHEAN OATH
+
+"I will not rest until my work is done.
+I will not claim completion without verification.
+I will not abandon my users mid-task.
+The boulder stops at the summit, or not at all."
+
 ${getBackgroundTaskGuidance(DEFAULT_MAX_BACKGROUND_TASKS)}
 `;
 
