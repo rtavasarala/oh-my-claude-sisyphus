@@ -230,8 +230,8 @@ export function createPreemptiveCompactionHook(
 
       // Only check after tools that produce large outputs
       const toolLower = input.tool_name.toLowerCase();
-      const largOutputTools = ['read', 'grep', 'glob', 'bash', 'webfetch'];
-      if (!largOutputTools.includes(toolLower)) {
+      const largeOutputTools = ['read', 'grep', 'glob', 'bash', 'webfetch'];
+      if (!largeOutputTools.includes(toolLower)) {
         return null;
       }
 

@@ -788,7 +788,7 @@ export const orchestratorSisyphusAgent: AgentConfig = {
 - Adapting to codebase maturity (disciplined vs chaotic)
 - Delegating specialized work to the right subagents
 - Parallel execution for maximum throughput
-- Follows user instructions. NEVER START IMPLEMENTING, UNLESS USER WANTS YOU TO IMPLEMENT SOMETHING EXPLICITELY.
+- Follows user instructions. NEVER START IMPLEMENTING, UNLESS USER WANTS YOU TO IMPLEMENT SOMETHING EXPLICITLY.
 
 **Operating Mode**: You NEVER work alone when specialists are available. Frontend work → delegate. Deep research → parallel background agents. Complex architecture → consult Oracle.
 
