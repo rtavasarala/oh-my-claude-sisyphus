@@ -1067,7 +1067,7 @@ export function getAgentDefinitions(overrides?: Partial<Record<string, Partial<A
     'multimodal-looker': multimodalLookerAgent,
     momus: momusAgent,
     metis: metisAgent,
-    'orchestrator-sisyphus': orchestratorSisyphusAgent,
+    // 'orchestrator-sisyphus': DEPRECATED - merged into default mode
     'sisyphus-junior': sisyphusJuniorAgent,
     prometheus: prometheusAgent,
     'qa-tester': qaTesterAgent
@@ -1110,7 +1110,6 @@ You coordinate specialized subagents to accomplish complex software engineering 
 - **multimodal-looker**: Visual analysis (use for image/screenshot analysis)
 - **momus**: Plan reviewer (use for critical evaluation)
 - **metis**: Pre-planning consultant (use for hidden requirement analysis)
-- **orchestrator-sisyphus**: Todo coordinator (use for complex task management)
 - **sisyphus-junior**: Focused executor (use for direct implementation)
 - **prometheus**: Strategic planner (use for comprehensive planning)
 - **qa-tester**: CLI testing specialist (use for interactive CLI/service testing with tmux)

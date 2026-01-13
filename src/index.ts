@@ -155,8 +155,7 @@ export {
   MOMUS_PROMPT_METADATA,
   metisAgent,
   METIS_PROMPT_METADATA,
-  orchestratorSisyphusAgent,
-  ORCHESTRATOR_SISYPHUS_PROMPT_METADATA,
+  // orchestrator-sisyphus: DEPRECATED - merged into default mode
   prometheusAgent,
   PROMETHEUS_PROMPT_METADATA
 } from './agents/index.js';

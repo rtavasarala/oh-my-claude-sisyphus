@@ -31,7 +31,8 @@ export { documentWriterAgent, DOCUMENT_WRITER_PROMPT_METADATA } from './document
 export { multimodalLookerAgent, MULTIMODAL_LOOKER_PROMPT_METADATA } from './multimodal-looker.js';
 export { momusAgent, MOMUS_PROMPT_METADATA } from './momus.js';
 export { metisAgent, METIS_PROMPT_METADATA } from './metis.js';
-export { orchestratorSisyphusAgent, ORCHESTRATOR_SISYPHUS_PROMPT_METADATA } from './orchestrator-sisyphus.js';
+// orchestrator-sisyphus: DEPRECATED - merged into default mode
+// export { orchestratorSisyphusAgent, ORCHESTRATOR_SISYPHUS_PROMPT_METADATA } from './orchestrator-sisyphus.js';
 export { prometheusAgent, PROMETHEUS_PROMPT_METADATA } from './prometheus.js';
 export { qaTesterAgent, QA_TESTER_PROMPT_METADATA } from './qa-tester.js';
 
