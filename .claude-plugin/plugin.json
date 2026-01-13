@@ -1,7 +1,7 @@
 {
   "name": "oh-my-claude-sisyphus",
-  "version": "1.11.2",
-  "description": "Multi-agent orchestration system for Claude Code - delegate tasks to specialized agents, manage todos persistently, and work until completion",
+  "version": "2.0.1-beta",
+  "description": "Claude Code native multi-agent orchestration - intelligent model routing, 19 agents, 11 commands, 231 tests",
   "author": {
     "name": "Yeachan Heo",
     "email": "hurrc04@gmail.com",
