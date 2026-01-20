@@ -261,6 +261,27 @@ Incomplete tasks remain in your todo list. Continue working on the next pending 
 - Mark each task complete when finished
 - Do not stop until all tasks are done`;
 
+/**
+ * Ralph mode message - injected when ralph keyword detected
+ * Auto-activates ultrawork for parallel execution
+ */
+export const RALPH_MESSAGE = `[RALPH + ULTRAWORK MODE ACTIVATED]
+
+Ralph mode auto-activates Ultrawork for maximum parallel execution. Follow these rules:
+
+### Parallel Execution
+- **PARALLEL**: Fire independent calls simultaneously - NEVER wait sequentially
+- **BACKGROUND FIRST**: Use Task(run_in_background=true) for long operations
+- **DELEGATE**: Route tasks to specialist agents immediately
+
+### Completion Requirements
+- Verify ALL requirements from the original task are met
+- When FULLY complete, output: <promise>TASK_COMPLETE</promise>
+- Architect verification is MANDATORY before claiming completion
+
+Continue working until the task is truly done.
+`;
+
 /** Keyword detector hook script - loaded from templates/hooks/keyword-detector.sh */
 export const KEYWORD_DETECTOR_SCRIPT = loadTemplate('keyword-detector.sh');
 

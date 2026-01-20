@@ -30,25 +30,9 @@ import {
   ULTRATHINK_MESSAGE,
   SEARCH_MESSAGE,
   ANALYZE_MESSAGE,
-  TODO_CONTINUATION_PROMPT
+  TODO_CONTINUATION_PROMPT,
+  RALPH_MESSAGE
 } from '../installer/hooks.js';
-
-export const RALPH_MESSAGE = `[RALPH + ULTRAWORK MODE ACTIVATED]
-
-Ralph mode auto-activates Ultrawork for maximum parallel execution. Follow these rules:
-
-### Parallel Execution
-- **PARALLEL**: Fire independent calls simultaneously - NEVER wait sequentially
-- **BACKGROUND FIRST**: Use Task(run_in_background=true) for long operations
-- **DELEGATE**: Route tasks to specialist agents immediately
-
-### Completion Requirements
-- Verify ALL requirements from the original task are met
-- When FULLY complete, output: <promise>TASK_COMPLETE</promise>
-- Architect verification is MANDATORY before claiming completion
-
-Continue working until the task is truly done.
-`;
 
 /**
  * Input format from Claude Code hooks (via stdin)
