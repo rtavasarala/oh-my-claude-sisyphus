@@ -7,7 +7,7 @@
  * - Environment variables
  */
 
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync, readdirSync } from 'fs';
 import { homedir } from 'os';
 import { join, dirname } from 'path';
 import * as jsonc from 'jsonc-parser';
@@ -276,6 +276,23 @@ export function findContextFiles(startDir?: string): string[] {
       const filePath = join(currentDir, fileName);
       if (existsSync(filePath) && !files.includes(filePath)) {
         files.push(filePath);
+      }
+    }
+
+    // Also check for rules files in .claude/rules/
+    const rulesDir = join(currentDir, '.claude', 'rules');
+    if (existsSync(rulesDir)) {
+      try {
+        const rulesFiles = readdirSync(rulesDir)
+          .filter(f => f.endsWith('.md'))
+          .map(f => join(rulesDir, f));
+        for (const ruleFile of rulesFiles) {
+          if (!files.includes(ruleFile)) {
+            files.push(ruleFile);
+          }
+        }
+      } catch {
+        // Ignore errors reading rules directory
       }
     }
 
