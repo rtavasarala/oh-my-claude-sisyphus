@@ -22,6 +22,17 @@ Ask clarifying questions about: Goals, Constraints, Context, Risks, Preferences
 
 **CRITICAL**: Don't assume. Ask until requirements are clear.
 
+**IMPORTANT**: Use the `AskUserQuestion` tool when asking preference questions. This provides a clickable UI for faster responses.
+
+**Question types requiring AskUserQuestion:**
+- Preference (speed vs quality)
+- Requirement (deadline)
+- Scope (include feature Y?)
+- Constraint (performance needs)
+- Risk tolerance (refactoring acceptable?)
+
+**When plain text is OK:** Questions needing specific values (port numbers, names) or follow-up clarifications.
+
 ### Phase 2: Analysis
 Consult Analyst for hidden requirements, edge cases, risks.
 

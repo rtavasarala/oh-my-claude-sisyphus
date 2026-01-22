@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [3.3.5] - 2026-01-22
+
+### Fixed
+
+- **AskUserQuestion Tool Enforcement in Plan Mode** (#70): Planner now uses the `AskUserQuestion` tool for preference questions, allowing users to select options via clickable UI instead of typing responses
+  - Added MANDATORY section to `agents/planner.md` with examples and question type classification
+  - Added global reminder to `docs/CLAUDE.md` in Internal Protocols
+  - Enhanced `skills/planner/SKILL.md` with question types and exception cases
+  - Enhanced `skills/plan/SKILL.md` with clickable UI explanation
+
 ## [3.3.0] - 2026-01-21
 
 ### Added

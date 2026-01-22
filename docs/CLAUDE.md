@@ -311,6 +311,13 @@ A request is BROAD and needs planning if ANY of:
 3. THEN invoke `planner` skill with gathered context
 4. Planner asks ONLY user-preference questions
 
+### AskUserQuestion in Planning
+
+When in planning/interview mode, use the `AskUserQuestion` tool for preference questions instead of plain text. This provides a clickable UI for faster user responses.
+
+**Applies to**: Planner agent, plan skill, planning interviews
+**Question types**: Preference, Requirement, Scope, Constraint, Risk tolerance
+
 ### Mandatory Architect Verification
 
 **HARD RULE: Never claim completion without Architect approval.**

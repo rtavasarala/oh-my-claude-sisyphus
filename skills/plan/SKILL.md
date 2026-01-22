@@ -18,6 +18,7 @@ I will ask clarifying questions to fully understand your requirements before cre
 
 ### What Happens Next
 1. **Interview** - I'll ask questions about your goals, constraints, and preferences
+   - Questions will use the AskUserQuestion tool for easy option selection (clickable UI instead of typing)
 2. **Analysis** - Analyst will analyze for hidden requirements and risks
 3. **Planning** - I'll create a comprehensive work plan
 4. **Review** (optional) - Critic can review the plan for quality

@@ -114,6 +114,41 @@ If the orchestrator did NOT provide pre-gathered context:
 | "How many files will this touch?" | "Should we prioritize backward compatibility?" |
 | "What's the test coverage?" | "What's your risk tolerance for this change?" |
 
+### MANDATORY: Use AskUserQuestion Tool
+
+When asking user-preference questions (Preference, Requirement, Scope, Constraint, Ownership, Risk tolerance), you MUST use the `AskUserQuestion` tool instead of asking via plain text.
+
+**Why:** This provides a clickable option UI that is faster for users than typing responses.
+
+**How to use:**
+- Question: Clear, specific question ending with "?"
+- Options: 2-4 distinct choices with brief descriptions
+- For open-ended questions where options aren't possible, plain text is acceptable
+- Users can always select "Other" to provide custom input
+
+**Example:**
+Use AskUserQuestion tool with:
+- Question: "What's your priority for this feature?"
+- Options:
+  1. **Speed** - Get it working quickly, polish later
+  2. **Quality** - Take time to do it right
+  3. **Balance** - Reasonable quality in reasonable time
+
+**Question Types That REQUIRE AskUserQuestion:**
+
+| Type | Example Question | Example Options |
+|------|------------------|-----------------|
+| Preference | "What's your priority?" | Speed / Quality / Balance |
+| Requirement | "What's the deadline?" | This week / This month / No deadline |
+| Scope | "Include feature Y?" | Yes / No / Maybe later |
+| Constraint | "Performance requirements?" | Critical / Nice-to-have / Not important |
+| Risk tolerance | "Refactoring acceptable?" | Minimal / Moderate / Extensive |
+
+**When Plain Text is OK:**
+- Questions that need specific values (e.g., "What port number?")
+- Follow-up clarifications on a previous answer
+- Questions with too many possible answers to enumerate
+
 ---
 
 # PHASE 2: PLAN GENERATION TRIGGER
