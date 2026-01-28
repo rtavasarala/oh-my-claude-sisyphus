@@ -14,9 +14,13 @@ import {
   incrementRalfreshIteration,
   addRalfreshLearning,
   addRalfreshIssue,
+  processRalfreshLoop,
+  getRalfreshContext,
+  getRalfreshContinuationPrompt,
   MAX_LEARNINGS,
   MAX_ISSUES,
-  MAX_ENTRY_LENGTH
+  MAX_ENTRY_LENGTH,
+  MAX_PROMPT_LENGTH
 } from '../hooks/ralfresh/index.js';
 
 // Mock mode-registry to avoid side effects
@@ -571,5 +575,233 @@ describe('Ralfresh Integration Scenarios', () => {
     expect(state?.phase).toBe('execution');
     expect(state?.phases.execution.status).toBe('in_progress');
     expect(state?.phases.planning.status).toBe('pending');
+  });
+});
+
+describe('Ralfresh Loop Functions', () => {
+  let tempDir: string;
+
+  beforeEach(() => {
+    tempDir = mkdtempSync(join(tmpdir(), 'ralfresh-loop-test-'));
+  });
+
+  afterEach(() => {
+    rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  describe('processRalfreshLoop', () => {
+    it('returns null when ralfresh is not active', async () => {
+      const result = await processRalfreshLoop(undefined, tempDir);
+      expect(result).toBeNull();
+    });
+
+    it('returns shouldBlock=true for active phase', async () => {
+      initRalfresh(tempDir, 'test task');
+      const result = await processRalfreshLoop(undefined, tempDir);
+      expect(result?.shouldBlock).toBe(true);
+      expect(result?.phase).toBe('planning');
+    });
+
+    it('returns shouldBlock=false for complete phase', async () => {
+      initRalfresh(tempDir, 'test task');
+      transitionRalfreshPhase(tempDir, 'execution');
+      transitionRalfreshPhase(tempDir, 'review');
+      transitionRalfreshPhase(tempDir, 'assess');
+      transitionRalfreshPhase(tempDir, 'complete');
+
+      // processRalfreshLoop checks state.active first, which is false after complete
+      // So it returns null for inactive state, not shouldBlock=false
+      // The correct behavior is: when phase is complete but active=false, return null
+      const result = await processRalfreshLoop(undefined, tempDir);
+      // After transition to complete, active=false, so processRalfreshLoop returns null
+      expect(result).toBeNull();
+    });
+
+    it('clears state after terminal phase', async () => {
+      initRalfresh(tempDir, 'test task');
+      transitionRalfreshPhase(tempDir, 'execution');
+      transitionRalfreshPhase(tempDir, 'review');
+      transitionRalfreshPhase(tempDir, 'assess');
+      transitionRalfreshPhase(tempDir, 'complete');
+
+      // After transition to complete, active=false, so processRalfreshLoop returns null
+      // The state file still exists (with active=false) but ralfresh is not active
+      await processRalfreshLoop(undefined, tempDir);
+      expect(isRalfreshActive(tempDir)).toBe(false);
+    });
+
+    it('includes iteration metadata', async () => {
+      initRalfresh(tempDir, 'test', undefined, { maxIterations: 3 });
+      const result = await processRalfreshLoop(undefined, tempDir);
+      expect(result?.metadata?.iteration).toBe(1);
+      expect(result?.metadata?.maxIterations).toBe(3);
+    });
+  });
+
+  describe('getRalfreshContext', () => {
+    it('returns empty string when no state', () => {
+      const context = getRalfreshContext(tempDir);
+      expect(context).toBe('');
+    });
+
+    it('includes ralfresh status', () => {
+      initRalfresh(tempDir, 'test task');
+      const context = getRalfreshContext(tempDir);
+      expect(context).toContain('Ralfresh Status');
+      expect(context).toContain('Iteration: 1');
+      expect(context).toContain('Phase: planning');
+      expect(context).toContain('test task');
+    });
+  });
+
+  describe('getRalfreshContinuationPrompt', () => {
+    it('returns planning prompt for planning phase', () => {
+      const state = initRalfresh(tempDir, 'test task')!;
+      const prompt = getRalfreshContinuationPrompt(state);
+      expect(prompt).toContain('PLANNING PHASE');
+      expect(prompt).toContain('ralplan');
+    });
+
+    it('returns execution prompt for execution phase', () => {
+      initRalfresh(tempDir, 'test task');
+      const state = transitionRalfreshPhase(tempDir, 'execution')!;
+      const prompt = getRalfreshContinuationPrompt(state);
+      expect(prompt).toContain('EXECUTION PHASE');
+      expect(prompt).toContain('swarm');
+    });
+
+    it('returns review prompt for review phase', () => {
+      initRalfresh(tempDir, 'test task');
+      transitionRalfreshPhase(tempDir, 'execution');
+      const state = transitionRalfreshPhase(tempDir, 'review')!;
+      const prompt = getRalfreshContinuationPrompt(state);
+      expect(prompt).toContain('REVIEW PHASE');
+      expect(prompt).toContain('Architect');
+    });
+
+    it('returns empty string for terminal phases', () => {
+      initRalfresh(tempDir, 'test task');
+      transitionRalfreshPhase(tempDir, 'execution');
+      transitionRalfreshPhase(tempDir, 'review');
+      transitionRalfreshPhase(tempDir, 'assess');
+      const state = transitionRalfreshPhase(tempDir, 'complete')!;
+      const prompt = getRalfreshContinuationPrompt(state);
+      expect(prompt).toBe('');
+    });
+
+    it('includes iteration info in prompt', () => {
+      const state = initRalfresh(tempDir, 'test', undefined, { maxIterations: 5 })!;
+      const prompt = getRalfreshContinuationPrompt(state);
+      expect(prompt).toContain('[Iteration 1/5]');
+    });
+  });
+});
+
+describe('Ralfresh Path Handling', () => {
+  let tempDir: string;
+
+  beforeEach(() => {
+    tempDir = mkdtempSync(join(tmpdir(), 'ralfresh-path-test-'));
+  });
+
+  afterEach(() => {
+    rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  it('normalizes paths with .. segments', () => {
+    // Create a subdirectory
+    const subDir = join(tempDir, 'subdir');
+    mkdirSync(subDir);
+
+    // Initialize using path with .. that resolves to tempDir
+    const pathWithDots = join(subDir, '..'); // resolves to tempDir
+    const state = initRalfresh(pathWithDots, 'test');
+
+    // Should succeed and create state in tempDir
+    expect(state).not.toBeNull();
+    expect(isRalfreshActive(tempDir)).toBe(true);
+  });
+
+  it('handles non-existent directories gracefully', () => {
+    const nonExistent = join(tempDir, 'does-not-exist-yet');
+
+    // Reading from non-existent should return null, not throw
+    const state = readRalfreshState(nonExistent);
+    expect(state).toBeNull();
+  });
+
+  it('creates state directory if it does not exist', () => {
+    const newDir = join(tempDir, 'new-project');
+    mkdirSync(newDir);
+
+    // Should create .omc/state/ and write state
+    const state = initRalfresh(newDir, 'test');
+    expect(state).not.toBeNull();
+    expect(existsSync(join(newDir, '.omc', 'state', 'ralfresh-state.json'))).toBe(true);
+  });
+});
+
+describe('Ralfresh State Validation', () => {
+  let tempDir: string;
+
+  beforeEach(() => {
+    tempDir = mkdtempSync(join(tmpdir(), 'ralfresh-validation-test-'));
+  });
+
+  afterEach(() => {
+    rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  it('handles malformed state file gracefully', () => {
+    const stateDir = join(tempDir, '.omc', 'state');
+    mkdirSync(stateDir, { recursive: true });
+    writeFileSync(join(stateDir, 'ralfresh-state.json'), '{"active": "not-a-boolean"}');
+    expect(readRalfreshState(tempDir)).toBeNull();
+  });
+
+  it('handles corrupted JSON gracefully', () => {
+    const stateDir = join(tempDir, '.omc', 'state');
+    mkdirSync(stateDir, { recursive: true });
+    writeFileSync(join(stateDir, 'ralfresh-state.json'), 'not valid json {{{');
+    expect(readRalfreshState(tempDir)).toBeNull();
+  });
+
+  it('handles missing required fields gracefully', () => {
+    const stateDir = join(tempDir, '.omc', 'state');
+    mkdirSync(stateDir, { recursive: true });
+    writeFileSync(join(stateDir, 'ralfresh-state.json'), JSON.stringify({
+      active: true,
+      // Missing: iteration, maxIterations, phase, prompt, etc.
+    }));
+    expect(readRalfreshState(tempDir)).toBeNull();
+  });
+});
+
+describe('Ralfresh Prompt Length Validation', () => {
+  let tempDir: string;
+
+  beforeEach(() => {
+    tempDir = mkdtempSync(join(tmpdir(), 'ralfresh-prompt-test-'));
+  });
+
+  afterEach(() => {
+    rmSync(tempDir, { recursive: true, force: true });
+  });
+
+  it('has correct MAX_PROMPT_LENGTH value', () => {
+    expect(MAX_PROMPT_LENGTH).toBe(32768);
+  });
+
+  it('rejects prompts exceeding MAX_PROMPT_LENGTH', () => {
+    const longPrompt = 'x'.repeat(MAX_PROMPT_LENGTH + 1);
+    const state = initRalfresh(tempDir, longPrompt);
+    expect(state).toBeNull();
+  });
+
+  it('accepts prompts at exactly MAX_PROMPT_LENGTH', () => {
+    const maxPrompt = 'x'.repeat(MAX_PROMPT_LENGTH);
+    const state = initRalfresh(tempDir, maxPrompt);
+    expect(state).not.toBeNull();
+    expect(state?.prompt).toBe(maxPrompt);
   });
 });

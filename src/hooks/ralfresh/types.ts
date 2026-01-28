@@ -133,3 +133,6 @@ export const MAX_ISSUES = 100;
 
 /** Maximum character length for a single learning/issue entry */
 export const MAX_ENTRY_LENGTH = 4096;
+
+/** Maximum character length for the original prompt */
+export const MAX_PROMPT_LENGTH = 32768; // 32KB reasonable limit

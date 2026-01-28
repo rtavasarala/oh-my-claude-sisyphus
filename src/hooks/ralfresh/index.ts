@@ -14,6 +14,7 @@ import type {
   RalfreshPhaseState,
   RalfreshConfig
 } from './types.js';
+import { MAX_PROMPT_LENGTH } from './types.js';
 
 // Re-export types
 export * from './types.js';
@@ -73,6 +74,12 @@ export function initRalfresh(
   sessionId?: string,
   config?: Partial<RalfreshConfig>
 ): RalfreshState | null {
+  // Validate prompt length
+  if (prompt.length > MAX_PROMPT_LENGTH) {
+    console.error(`[Ralfresh] Prompt exceeds maximum length (${MAX_PROMPT_LENGTH} chars)`);
+    return null;
+  }
+
   // Check mutual exclusion
   const canStart = canStartMode('ralfresh', directory);
   if (!canStart.allowed) {

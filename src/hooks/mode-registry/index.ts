@@ -79,13 +79,24 @@ const MODE_CONFIGS: Record<ExecutionMode, ModeConfig> = {
   ralfresh: {
     name: 'Ralfresh',
     stateFile: 'ralfresh-state.json',
-    activeProperty: 'active',
-    hasGlobalState: true
+    activeProperty: 'active'
   }
 };
 
 // Export for use in other modules
 export { MODE_CONFIGS };
+
+/**
+ * Modes that can be spawned as sub-modes by ralfresh
+ *
+ * TECHNICAL DEBT: This constant duplicates knowledge of ralfresh's sub-mode
+ * behavior. Ideally, ModeConfig would have a `subModes` field and this check
+ * would be generic. Left as-is for minimal change scope in PR #181.
+ *
+ * Exported so that ralfresh/state.ts can import it for cleanup logic
+ * instead of maintaining a duplicate list.
+ */
+export const RALFRESH_SUB_MODES: ExecutionMode[] = ['swarm', 'ultrawork', 'ralph'];
 
 /**
  * Modes that are mutually exclusive (cannot run concurrently)
@@ -273,6 +284,11 @@ export function canStartMode(mode: ExecutionMode, cwd: string): CanStartResult {
   if (EXCLUSIVE_MODES.includes(mode)) {
     for (const exclusiveMode of EXCLUSIVE_MODES) {
       if (exclusiveMode !== mode && isModeActive(exclusiveMode, cwd)) {
+        // Special case: ralfresh can spawn sub-modes
+        if (exclusiveMode === 'ralfresh' && RALFRESH_SUB_MODES.includes(mode)) {
+          continue; // Allow this combination
+        }
+
         const config = MODE_CONFIGS[exclusiveMode];
         return {
           allowed: false,

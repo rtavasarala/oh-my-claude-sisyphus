@@ -21,6 +21,8 @@ const VALID_TRANSITIONS: Record<RalfreshPhase, RalfreshPhase[]> = {
   planning: ['execution'],
   execution: ['review'],
   review: ['assess'],
+  // NOTE: assess->planning is valid but prefer incrementRalfreshIteration()
+  // which resets all phases and clears sub-mode state for a fresh start.
   assess: ['planning', 'complete', 'failed'],
   complete: [],
   failed: []
@@ -315,5 +317,8 @@ ${context ? `<ralfresh-wisdom>\n${context}\n</ralfresh-wisdom>` : ''}
   };
 }
 
-/** @deprecated Use processRalfreshLoop instead */
+/**
+ * @deprecated Use processRalfreshLoop instead.
+ * Scheduled for removal in v4.0.0.
+ */
 export const checkRalfreshLoop = processRalfreshLoop;
