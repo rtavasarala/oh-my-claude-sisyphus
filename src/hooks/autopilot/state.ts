@@ -186,7 +186,8 @@ export function initAutopilot(
     phase_durations: {},
     total_agents_spawned: 0,
     wisdom_entries: 0,
-    session_id: sessionId
+    session_id: sessionId,
+    project_path: directory
   };
 
   ensureAutopilotDir(directory);

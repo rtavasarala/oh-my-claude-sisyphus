@@ -61,6 +61,8 @@ export interface RalphLoopState {
   prompt: string;
   /** Session ID the loop is bound to */
   session_id?: string;
+  /** Project path for isolation */
+  project_path?: string;
   /** Whether PRD mode is active */
   prd_mode?: boolean;
   /** Current story being worked on */
@@ -220,6 +222,7 @@ export function createRalphLoopHook(directory: string): RalphLoopHook {
       started_at: now,
       prompt,
       session_id: sessionId,
+      project_path: directory,
       linked_ultrawork: enableUltrawork
     };
 

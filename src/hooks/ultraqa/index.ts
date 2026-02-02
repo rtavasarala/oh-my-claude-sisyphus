@@ -28,6 +28,8 @@ export interface UltraQAState {
   started_at: string;
   /** Session ID the loop is bound to */
   session_id?: string;
+  /** Project path for isolation */
+  project_path?: string;
 }
 
 export interface UltraQAOptions {
@@ -153,7 +155,8 @@ export function startUltraQA(
     max_cycles: options?.maxCycles ?? DEFAULT_MAX_CYCLES,
     failures: [],
     started_at: new Date().toISOString(),
-    session_id: sessionId
+    session_id: sessionId,
+    project_path: directory
   };
 
   const written = writeUltraQAState(directory, state);

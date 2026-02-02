@@ -18,6 +18,8 @@ export interface UltraworkState {
   original_prompt: string;
   /** Session ID the mode is bound to */
   session_id?: string;
+  /** Project path for isolation */
+  project_path?: string;
   /** Number of times the mode has been reinforced (for metrics) */
   reinforcement_count: number;
   /** Last time the mode was checked/reinforced */
@@ -102,6 +104,7 @@ export function activateUltrawork(
     started_at: new Date().toISOString(),
     original_prompt: prompt,
     session_id: sessionId,
+    project_path: directory || process.cwd(),
     reinforcement_count: 0,
     last_checked_at: new Date().toISOString(),
     linked_to_ralph: linkedToRalph

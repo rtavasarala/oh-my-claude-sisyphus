@@ -29,6 +29,7 @@ export interface SwarmSummary {
   tasks_claimed: number;
   tasks_done: number;
   active: boolean;
+  project_path?: string;
 }
 
 // Type alias for the Database constructor
@@ -653,7 +654,8 @@ export function writeSwarmSummary(cwd: string): boolean {
       tasks_pending: stats.pendingTasks,
       tasks_claimed: stats.claimedTasks,
       tasks_done: stats.doneTasks,
-      active: state.active
+      active: state.active,
+      project_path: cwd
     };
 
     const stateDir = join(cwd, '.omc', 'state');
