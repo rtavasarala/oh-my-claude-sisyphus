@@ -63,7 +63,7 @@ describe('MCP Server Workflows', () => {
           });
           return {
             stdout: { on: vi.fn() },
-            stderr: { on: vi.fn((e: string, cb: Function) => { if (e === 'data') cb('not found'); }) },
+            stderr: { on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'data') cb('not found'); }) },
             on: mockClose
           } as any;
         }
@@ -159,9 +159,9 @@ describe('MCP Server Workflows', () => {
       vi.mocked(spawn).mockImplementation((cmd: string, args: readonly string[]) => {
         spawnCalls.push(args as string[]);
         return {
-          stdout: { on: vi.fn((e: string, cb: Function) => { if (e === 'data') cb('OK'); }) },
+          stdout: { on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'data') cb('OK'); }) },
           stderr: { on: vi.fn() },
-          on: vi.fn((e: string, cb: Function) => { if (e === 'close') cb(0); })
+          on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'close') cb(0); })
         } as any;
       });
 
@@ -198,8 +198,8 @@ describe('MCP Server Workflows', () => {
         if (cmd === 'which') {
           return {
             stdout: { on: vi.fn() },
-            stderr: { on: vi.fn((e: string, cb: Function) => { if (e === 'data') cb('not found'); }) },
-            on: vi.fn((e: string, cb: Function) => { if (e === 'close') cb(1); })
+            stderr: { on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'data') cb('not found'); }) },
+            on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'close') cb(1); })
           } as any;
         }
         return {
@@ -219,9 +219,9 @@ describe('MCP Server Workflows', () => {
       vi.mocked(spawn).mockImplementation((cmd: string, args: readonly string[]) => {
         spawnCalls.push(args as string[]);
         return {
-          stdout: { on: vi.fn((e: string, cb: Function) => { if (e === 'data') cb('Large context analysis'); }) },
+          stdout: { on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'data') cb('Large context analysis'); }) },
           stderr: { on: vi.fn() },
-          on: vi.fn((e: string, cb: Function) => { if (e === 'close') cb(0); })
+          on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'close') cb(0); })
         } as any;
       });
 
@@ -235,9 +235,9 @@ describe('MCP Server Workflows', () => {
       vi.mocked(spawn).mockImplementation((cmd: string, args: readonly string[]) => {
         spawnCalls.push(args as string[]);
         return {
-          stdout: { on: vi.fn((e: string, cb: Function) => { if (e === 'data') cb('Pro model response'); }) },
+          stdout: { on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'data') cb('Pro model response'); }) },
           stderr: { on: vi.fn() },
-          on: vi.fn((e: string, cb: Function) => { if (e === 'close') cb(0); })
+          on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'close') cb(0); })
         } as any;
       });
 
@@ -292,7 +292,7 @@ describe('MCP Server Workflows', () => {
       const spawnMock = vi.fn().mockReturnValue({
         stdout: { on: vi.fn() },
         stderr: { on: vi.fn() },
-        on: vi.fn((e: string, cb: Function) => { if (e === 'close') cb(0); })
+        on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'close') cb(0); })
       });
       vi.mocked(spawn).mockImplementation(spawnMock);
 
@@ -310,7 +310,7 @@ describe('MCP Server Workflows', () => {
       const spawnMock = vi.fn().mockReturnValue({
         stdout: { on: vi.fn() },
         stderr: { on: vi.fn() },
-        on: vi.fn((e: string, cb: Function) => { if (e === 'close') cb(0); })
+        on: vi.fn((e: string, cb: (...args: unknown[]) => void) => { if (e === 'close') cb(0); })
       });
       vi.mocked(spawn).mockImplementation(spawnMock);
 
