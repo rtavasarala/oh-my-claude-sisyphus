@@ -129,6 +129,39 @@ function clearStateFiles(directory, modeNames) {
 }
 
 /**
+ * Link ralph and team state files for composition.
+ * Updates both state files to reference each other.
+ */
+function linkRalphTeam(directory, sessionId) {
+  const getStatePath = (modeName) => {
+    if (sessionId && /^[a-zA-Z0-9][a-zA-Z0-9_-]{0,255}$/.test(sessionId)) {
+      return join(directory, '.omc', 'state', 'sessions', sessionId, `${modeName}-state.json`);
+    }
+    return join(directory, '.omc', 'state', `${modeName}-state.json`);
+  };
+
+  // Update ralph state with linked_team
+  try {
+    const ralphPath = getStatePath('ralph');
+    if (existsSync(ralphPath)) {
+      const state = JSON.parse(readFileSync(ralphPath, 'utf-8'));
+      state.linked_team = true;
+      writeFileSync(ralphPath, JSON.stringify(state, null, 2), { mode: 0o600 });
+    }
+  } catch { /* silent */ }
+
+  // Update team state with linked_ralph
+  try {
+    const teamPath = getStatePath('team');
+    if (existsSync(teamPath)) {
+      const state = JSON.parse(readFileSync(teamPath, 'utf-8'));
+      state.linked_ralph = true;
+      writeFileSync(teamPath, JSON.stringify(state, null, 2), { mode: 0o600 });
+    }
+  } catch { /* silent */ }
+}
+
+/**
  * Create a skill invocation message that tells Claude to use the Skill tool
  */
 function createSkillInvocation(skillName, originalPrompt, args = '') {
@@ -478,8 +511,14 @@ async function main() {
     const hasRalph = resolved.some(m => m.name === 'ralph');
     const hasEcomode = resolved.some(m => m.name === 'ecomode');
     const hasUltrawork = resolved.some(m => m.name === 'ultrawork');
+    const hasTeam = resolved.some(m => m.name === 'team');
     if (hasRalph && !hasEcomode && !hasUltrawork) {
       activateState(directory, prompt, 'ultrawork', sessionId);
+    }
+
+    // Link ralph + team if both detected (team-ralph composition)
+    if (hasRalph && hasTeam) {
+      linkRalphTeam(directory, sessionId);
     }
 
     // Handle ultrathink specially - prepend message instead of skill invocation

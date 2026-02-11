@@ -219,6 +219,10 @@ export function getAllKeywords(text: string): KeywordType[] {
     types = types.filter(t => t !== 'autopilot');
   }
 
+  // Composition: team + ralph coexist (team-ralph linked mode)
+  // Both keywords are preserved so the skill can detect the composition.
+  // Ralph is primary (higher priority) but team is kept as secondary.
+
   // Sort by priority order
   return KEYWORD_PRIORITY.filter(k => types.includes(k));
 }
