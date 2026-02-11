@@ -133,8 +133,8 @@ function parseRef(ref: string): {
     };
   }
 
-  // owner/repo!123 format (GitLab MR shorthand)
-  const gitlabShorthand = ref.match(/^([^/]+)\/([^!]+)!(\d+)$/);
+  // owner/repo!123 format (GitLab MR shorthand, supports nested groups)
+  const gitlabShorthand = ref.match(/^(.+?)\/([^!/]+)!(\d+)$/);
   if (gitlabShorthand) {
     return {
       type: 'pr',

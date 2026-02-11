@@ -93,6 +93,19 @@ export function parseRemoteUrl(url: string): RemoteUrlInfo | null {
     };
   }
 
+  // Azure DevOps legacy HTTPS: https://{org}.visualstudio.com/{project}/_git/{repo}
+  const azureLegacyMatch = trimmed.match(
+    /https?:\/\/([^.]+)\.visualstudio\.com\/([^/]+)\/_git\/([^/\s]+?)(?:\.git)?$/
+  );
+  if (azureLegacyMatch) {
+    return {
+      provider: 'azure-devops',
+      host: `${azureLegacyMatch[1]}.visualstudio.com`,
+      owner: `${azureLegacyMatch[1]}/${azureLegacyMatch[2]}`,
+      repo: azureLegacyMatch[3],
+    };
+  }
+
   // Standard HTTPS: https://host/owner/repo.git (supports nested groups like group/subgroup/repo)
   const httpsMatch = trimmed.match(
     /https?:\/\/([^/]+)\/(.+?)\/([^/\s]+?)(?:\.git)?$/

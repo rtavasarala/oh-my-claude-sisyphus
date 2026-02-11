@@ -26,16 +26,18 @@ provider_gitlab_fetch_issue() {
 provider_gitlab_pr_merged() {
     local pr_number="$1"
     local repo="$2"
+    command -v jq >/dev/null 2>&1 || return 1
     local merged_at
-    merged_at=$(glab mr view "$pr_number" --repo "$repo" --output json 2>/dev/null | jq -r '.merged_at')
-    [[ "$merged_at" != "null" && -n "$merged_at" ]]
+    merged_at=$(glab mr view "$pr_number" --repo "$repo" --output json 2>/dev/null | jq -r '.merged_at // empty')
+    [[ -n "$merged_at" && "$merged_at" != "null" ]]
 }
 
 provider_gitlab_issue_closed() {
     local issue_number="$1"
     local repo="$2"
+    command -v jq >/dev/null 2>&1 || return 1
     local state
-    state=$(glab issue view "$issue_number" --repo "$repo" --output json 2>/dev/null | jq -r '.state')
+    state=$(glab issue view "$issue_number" --repo "$repo" --output json 2>/dev/null | jq -r '.state // empty')
     [[ "$state" == "closed" ]]
 }
 
