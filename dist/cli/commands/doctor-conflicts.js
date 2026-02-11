@@ -116,7 +116,7 @@ export function checkConfigIssues() {
             'permissions',
             'magicKeywords',
             'routing',
-            // SisyphusConfig fields (from auto-update.ts / omc-setup)
+            // OMCConfig fields (from auto-update.ts / omc-setup)
             'silentAutoUpdate',
             'configuredAt',
             'configVersion',
@@ -127,6 +127,8 @@ export function checkConfigIssues() {
             'ecomode',
             'setupCompleted',
             'setupVersion',
+            'stopHookCallbacks',
+            'notifications',
         ]);
         for (const field of Object.keys(config)) {
             if (!knownFields.has(field)) {

@@ -7,7 +7,7 @@
 import { writeFileSync, mkdirSync } from 'fs';
 import { dirname, normalize } from 'path';
 import { homedir } from 'os';
-import { getSisyphusConfig, } from '../../features/auto-update.js';
+import { getOMCConfig, } from '../../features/auto-update.js';
 /**
  * Format session summary for notifications
  */
@@ -150,7 +150,7 @@ async function sendDiscord(config, message) {
  * Failures in individual callbacks don't block session end.
  */
 export async function triggerStopCallbacks(metrics, _input) {
-    const config = getSisyphusConfig();
+    const config = getOMCConfig();
     const callbacks = config.stopHookCallbacks;
     if (!callbacks) {
         return; // No callbacks configured

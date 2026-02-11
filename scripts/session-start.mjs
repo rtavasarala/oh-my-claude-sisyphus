@@ -14,6 +14,9 @@ import { fileURLToPath, pathToFileURL } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+/** Claude config directory (respects CLAUDE_CONFIG_DIR env var) */
+const configDir = process.env.CLAUDE_CONFIG_DIR || join(homedir(), '.claude');
+
 // Import timeout-protected stdin reader (prevents hangs on Linux/Windows, see issue #240, #524)
 let readStdin;
 try {
@@ -427,6 +430,22 @@ ${cleanContent}
         }
       }
     } catch {}
+
+    // Send session-start notification (non-blocking, fire-and-forget)
+    try {
+      const pluginRoot = process.env.CLAUDE_PLUGIN_ROOT;
+      if (pluginRoot) {
+        const { notify } = await import(pathToFileURL(join(pluginRoot, 'dist', 'notifications', 'index.js')).href);
+        // Fire and forget - don't await, don't block session start
+        notify('session-start', {
+          sessionId,
+          projectPath: directory,
+          timestamp: new Date().toISOString(),
+        }).catch(() => {}); // swallow errors silently
+      }
+    } catch {
+      // Notification module not available, skip silently
+    }
 
     if (messages.length > 0) {
       console.log(JSON.stringify({

@@ -56,9 +56,9 @@ export const CLAUDE_CONFIG_DIR = join(homedir(), '.claude');
 export const VERSION_FILE = join(CLAUDE_CONFIG_DIR, '.omc-version.json');
 export const CONFIG_FILE = join(CLAUDE_CONFIG_DIR, '.omc-config.json');
 /**
- * Read the Sisyphus configuration
+ * Read the OMC configuration
  */
-export function getSisyphusConfig() {
+export function getOMCConfig() {
     if (!existsSync(CONFIG_FILE)) {
         // No config file = disabled by default for security
         return { silentAutoUpdate: false };
@@ -77,6 +77,7 @@ export function getSisyphusConfig() {
             setupCompleted: config.setupCompleted,
             setupVersion: config.setupVersion,
             stopHookCallbacks: config.stopHookCallbacks,
+            notifications: config.notifications,
         };
     }
     catch {
@@ -88,14 +89,14 @@ export function getSisyphusConfig() {
  * Check if silent auto-updates are enabled
  */
 export function isSilentAutoUpdateEnabled() {
-    return getSisyphusConfig().silentAutoUpdate;
+    return getOMCConfig().silentAutoUpdate;
 }
 /**
  * Check if ecomode is enabled
  * Returns true by default if not explicitly disabled
  */
 export function isEcomodeEnabled() {
-    const config = getSisyphusConfig();
+    const config = getOMCConfig();
     // Default to true if not configured
     return config.ecomode?.enabled !== false;
 }

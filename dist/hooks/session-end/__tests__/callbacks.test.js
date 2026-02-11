@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { formatSessionSummary, interpolatePath, triggerStopCallbacks } from '../callbacks.js';
 // Mock auto-update module
 vi.mock('../../../features/auto-update.js', () => ({
-    getSisyphusConfig: vi.fn(() => ({
+    getOMCConfig: vi.fn(() => ({
         silentAutoUpdate: false,
         stopHookCallbacks: undefined,
     })),
@@ -17,9 +17,9 @@ vi.mock('fs', async () => {
     };
 });
 // Import mocked modules
-import { getSisyphusConfig } from '../../../features/auto-update.js';
+import { getOMCConfig } from '../../../features/auto-update.js';
 import { writeFileSync, mkdirSync } from 'fs';
-const mockGetConfig = vi.mocked(getSisyphusConfig);
+const mockGetConfig = vi.mocked(getOMCConfig);
 const mockWriteFileSync = vi.mocked(writeFileSync);
 const mockMkdirSync = vi.mocked(mkdirSync);
 function createTestMetrics(overrides) {

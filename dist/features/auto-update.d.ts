@@ -10,6 +10,7 @@
  * - Configurable update notifications
  */
 import { TaskTool } from '../hooks/beads-context/types.js';
+import type { NotificationConfig } from '../notifications/types.js';
 /** GitHub repository information */
 export declare const REPO_OWNER = "Yeachan-Heo";
 export declare const REPO_NAME = "oh-my-claudecode";
@@ -58,7 +59,7 @@ export interface StopHookCallbacksConfig {
 /**
  * OMC configuration (stored in .omc-config.json)
  */
-export interface SisyphusConfig {
+export interface OMCConfig {
     /** Whether silent auto-updates are enabled (opt-in for security) */
     silentAutoUpdate: boolean;
     /** When the configuration was set */
@@ -85,13 +86,15 @@ export interface SisyphusConfig {
     setupCompleted?: string;
     /** Version of setup wizard that was completed */
     setupVersion?: string;
-    /** Stop hook callback configuration */
+    /** Stop hook callback configuration (legacy, use notifications instead) */
     stopHookCallbacks?: StopHookCallbacksConfig;
+    /** Multi-platform lifecycle notification configuration */
+    notifications?: NotificationConfig;
 }
 /**
- * Read the Sisyphus configuration
+ * Read the OMC configuration
  */
-export declare function getSisyphusConfig(): SisyphusConfig;
+export declare function getOMCConfig(): OMCConfig;
 /**
  * Check if silent auto-updates are enabled
  */

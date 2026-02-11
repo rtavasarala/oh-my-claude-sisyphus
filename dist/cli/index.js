@@ -19,7 +19,7 @@ import { fileURLToPath } from 'url';
 import { homedir } from 'os';
 import { loadConfig, getConfigPaths, generateConfigSchema } from '../config/loader.js';
 import { createSisyphusSession } from '../index.js';
-import { checkForUpdates, performUpdate, formatUpdateNotification, getInstalledVersion, getSisyphusConfig, CONFIG_FILE, } from '../features/auto-update.js';
+import { checkForUpdates, performUpdate, formatUpdateNotification, getInstalledVersion, getOMCConfig, CONFIG_FILE, } from '../features/auto-update.js';
 import { install as installSisyphus, isInstalled, getInstallInfo } from '../installer/index.js';
 import { statsCommand } from './commands/stats.js';
 import { costCommand } from './commands/cost.js';
@@ -513,7 +513,7 @@ Examples:
         console.error(chalk.gray(`Valid types: ${validTypes.join(', ')}`));
         process.exit(1);
     }
-    const config = getSisyphusConfig();
+    const config = getOMCConfig();
     config.stopHookCallbacks = config.stopHookCallbacks || {};
     // Show current config
     if (options.show) {

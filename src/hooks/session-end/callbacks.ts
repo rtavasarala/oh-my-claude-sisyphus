@@ -10,7 +10,7 @@ import { dirname, normalize, resolve } from 'path';
 import { homedir } from 'os';
 import type { SessionMetrics } from './index.js';
 import {
-  getSisyphusConfig,
+  getOMCConfig,
   type StopCallbackFileConfig,
   type StopCallbackTelegramConfig,
   type StopCallbackDiscordConfig,
@@ -186,7 +186,7 @@ export async function triggerStopCallbacks(
   metrics: SessionMetrics,
   _input: { session_id: string; cwd: string }
 ): Promise<void> {
-  const config = getSisyphusConfig();
+  const config = getOMCConfig();
   const callbacks = config.stopHookCallbacks;
 
   if (!callbacks) {

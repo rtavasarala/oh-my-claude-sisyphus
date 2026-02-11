@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { triggerStopCallbacks } from './callbacks.js';
+import { notify } from '../../notifications/index.js';
 
 export interface SessionEndInput {
   session_id: string;
@@ -333,6 +334,22 @@ export async function processSessionEnd(input: SessionEndInput): Promise<HookOut
     session_id: input.session_id,
     cwd: input.cwd,
   });
+
+  // Trigger new notification system (in addition to legacy callbacks)
+  try {
+    await notify('session-end', {
+      sessionId: input.session_id,
+      projectPath: input.cwd,
+      durationMs: metrics.duration_ms,
+      agentsSpawned: metrics.agents_spawned,
+      agentsCompleted: metrics.agents_completed,
+      modesUsed: metrics.modes_used,
+      reason: metrics.reason,
+      timestamp: metrics.ended_at,
+    });
+  } catch {
+    // Notification failures should never block session end
+  }
 
   // Return simple response - metrics are persisted to .omc/sessions/
   return { continue: true };
