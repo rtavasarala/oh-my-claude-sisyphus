@@ -69,7 +69,9 @@ export function getSessionStartTime(directory, sessionId) {
     }
     const stateFiles = fs.readdirSync(stateDir).filter(f => f.endsWith('.json'));
     let matchedStartTime;
+    let matchedEpoch = Infinity;
     let legacyStartTime;
+    let legacyEpoch = Infinity;
     for (const file of stateFiles) {
         try {
             const statePath = path.join(stateDir, file);
@@ -78,15 +80,21 @@ export function getSessionStartTime(directory, sessionId) {
             if (!state.started_at) {
                 continue;
             }
+            const ts = Date.parse(state.started_at);
+            if (!Number.isFinite(ts)) {
+                continue; // skip invalid / malformed timestamps
+            }
             if (sessionId && state.session_id === sessionId) {
                 // State belongs to the current session — prefer earliest
-                if (!matchedStartTime || state.started_at < matchedStartTime) {
+                if (ts < matchedEpoch) {
+                    matchedEpoch = ts;
                     matchedStartTime = state.started_at;
                 }
             }
             else if (!state.session_id) {
                 // Legacy state without session_id — fallback only
-                if (!legacyStartTime || state.started_at < legacyStartTime) {
+                if (ts < legacyEpoch) {
+                    legacyEpoch = ts;
                     legacyStartTime = state.started_at;
                 }
             }
