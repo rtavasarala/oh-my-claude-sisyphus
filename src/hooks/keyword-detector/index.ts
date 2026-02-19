@@ -25,8 +25,8 @@ export type KeywordType =
   | 'deepsearch'  // Priority 12
   | 'analyze'     // Priority 13
   | 'codex'       // Priority 14
-  | 'gemini';     // Priority 15
-  | 'ccg'         // Priority 8.5 (Claude-Codex-Gemini orchestration)
+  | 'gemini'      // Priority 15
+  | 'ccg';        // Priority 8.5 (Claude-Codex-Gemini orchestration)
 
 export interface DetectedKeyword {
   type: KeywordType;
